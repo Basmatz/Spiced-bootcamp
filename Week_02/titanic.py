@@ -195,7 +195,7 @@ print('MAE:', score)
 # encoded = df[cat_features].apply(encoder.fit_transform)
 
 
-
+#Show more columns
 desired_width = 300
 
 pd.set_option('display.width', desired_width)
@@ -207,7 +207,7 @@ survived = df[df["Survived"]==1].Survived.value_counts()
 died = df[df["Survived"]==0].Survived.value_counts()
 
 
-#seaborn plot
+#seaborn plot #number of surviving/non-surviving passengers
 plt.figure(figsize=(10,6))
 # plt.title("Number of surviving/non-surviving passengers")
 # barplot = sns.barplot(x=df["Survived"].unique(), y=df["Survived"].value_counts())
