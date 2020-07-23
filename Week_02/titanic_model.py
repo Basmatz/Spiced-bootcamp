@@ -5,6 +5,7 @@ from sklearn.preprocessing import OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
+from sklearn.utils import resample
 
 df = pd.read_csv("train.csv")
 test = pd.read_csv("test.csv")
@@ -55,8 +56,55 @@ preds = my_pipeline.predict(test)
 
 print("Score: ", my_pipeline.score(X_valid, y_valid))
 
-# Save test predictions to file
-output = pd.DataFrame({'PassengerId': test.PassengerId,
-                       'Survived': preds})
 
-output.to_csv('submission.csv', index=False)
+import threading
+import time
+import random
+
+
+number = 1
+boots = []
+
+class MyThread (threading.Thread):
+
+    def run(self):
+        global number
+        global boots
+        print('This is thread ' + str(number) + ' speaking.')
+        n = number
+        number += 1
+        for i in range(100):
+            Xb, yb = resample(X, y)
+            my_pipeline.fit(Xb, yb)
+            score = my_pipeline.score(Xb, yb)
+            boots.append(score)
+            print(i, score)
+
+
+for x in range(10):
+       MyThread().start()
+
+
+# for i in range(1000):
+#     Xb, yb = resample(X, y)
+#     my_pipeline.fit(Xb, yb)
+#     score = my_pipeline.score(Xb, yb)
+#     boots.append(score)
+#     print(i, score)
+#
+# get percentiles for 90% confidence
+# boots.sort()
+# ci80 = boots[100:-100]
+# print(f"80% confidence interval: {ci80[0]:5.2} -{ci80[-1]:5.2}")
+# ci90 = boots[50:-50]
+# print(f"90% confidence interval: {ci90[0]:5.2} -{ci90[-1]:5.2}")
+# ci95 = boots[25:-25]
+# print(f"95% confidence interval: {ci95[0]:5.2} -{ci95[-1]:5.2}")
+# ci99 = boots[5:-5]
+# print(f"99% confidence interval: {ci99[0]:5.2} -{ci99[-1]:5.2}")
+
+# Save test predictions to file
+# output = pd.DataFrame({'PassengerId': test.PassengerId,
+#                        'Survived': preds})
+#
+# output.to_csv('submission.csv', index=False)
