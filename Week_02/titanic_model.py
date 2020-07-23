@@ -51,7 +51,7 @@ my_pipeline = Pipeline(steps=[('preprocessor', preprocessor),
                              ])
 
 my_pipeline.fit(X_train, y_train)
-
+print(test)
 preds = my_pipeline.predict(test)
 
 print("Score: ", my_pipeline.score(X_valid, y_valid))
