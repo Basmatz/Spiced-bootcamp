@@ -1,6 +1,7 @@
 # Import our libraries
 import pandas as pd
 import numpy as np
+from matplotlib import pyplot as plt
 
 # Import sklearn libraries
 from sklearn.model_selection import train_test_split, GridSearchCV, StratifiedKFold, cross_val_score
@@ -17,11 +18,11 @@ from sklearn import svm
 from xgboost import XGBClassifier
 
 import seaborn as sns
-import matplotlib.pyplot as plt
 #from matplotlib import style
 #plt.style.use('bmh')
 #plt.style.use('ggplot')
-plt.style.use('seaborn-notebook')
+#plt.style.use('seaborn-notebook')
+
 
 from matplotlib.ticker import StrMethodFormatter
 
@@ -126,7 +127,7 @@ for dataset in data:
     dataset['Title'] = dataset['Title'].replace('Ms', 'Miss')
     dataset['Title'] = dataset['Title'].replace('Mme', 'Mrs')
     # convert titles into numbers
-    dataset['Title'] = dataset['Title'].map(titles)
+    #dataset['Title'] = dataset['Title'].map(titles)
     # filling NaN with 0, to get safe
     dataset['Title'] = dataset['Title'].fillna("NA")
 train_df = train_df.drop(['Name'], axis=1)
@@ -134,7 +135,7 @@ test_df = test_df.drop(['Name'], axis=1)
 
 #Convert Sex into numbers (Maybe leave it categorical?)
 genders = {"male": 0, "female": 1}
-data = [train_df, test_df]
+#data = [train_df, test_df]
 
 for dataset in data:
     dataset['Sex'] = dataset['Sex'].map(genders)
@@ -145,7 +146,7 @@ test_df = test_df.drop(['Ticket'], axis=1)
 
 #Convert Embark to numbers (Maybe leave it categorical?)
 ports = {"S": 0, "C": 1, "Q": 2}
-data = [train_df, test_df]
+#data = [train_df, test_df]
 
 for dataset in data:
     dataset['Embarked'] = dataset['Embarked'].map(ports)
@@ -184,7 +185,7 @@ for dataset in data:
     dataset.loc[dataset['Age'] == '7', 'Age'] = "Retired"
 
 # let's see how it's distributed
-print(train_df['Age'].value_counts())
+# print(train_df['Age'].value_counts())
 
 #Add Fare Bins
 data = [train_df, test_df]
@@ -217,9 +218,9 @@ for dataset in data:
     dataset.loc[ dataset['Pclass'] == '3', 'Pclass'] = "Class3"
 
 # let's see how it's distributed
-print(train_df['Age'].value_counts())
-
-print(train_df.info())
+# print(train_df['Age'].value_counts())
+#
+# print(train_df.info())
 
 # Capture all the numerical features so that we can scale them later
 #data = [train_df, test_df]
@@ -309,15 +310,6 @@ bag_data.insert((bag_data.shape[1]),'Survived',bag_predictions)
 #bag_data.to_csv('Bagging.csv')
 
 
-###Random Forest
-
-random_forest = RandomForestClassifier(n_estimators=100)
-random_forest.fit(X_train, Y_train)
-
-random_forest_predictions = random_forest.predict(X_test)
-
-rf_data = pd.read_csv('test.csv')
-rf_data.insert((rf_data.shape[1]),'Survived',random_forest_predictions)
 
 #rf_data.to_csv('RandomForest_SS_OH.csv')
 
@@ -365,47 +357,39 @@ xg_data.insert((xg_data.shape[1]),'Survived',xg_predictions)
 #xg_data.to_csv('XGBoost_SS_OH_FE_GSCV.csv')
 
 
+
+
+
+
+
+
+
+###Imports
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import GridSearchCV
+
+###Random Forest Classifier
+
+random_forest = RandomForestClassifier(random_state=0)
+
+
 ###GridSearchCV
-param_test1 = {
-    'n_estimators': [100,200,500,750,1000],
-    'max_depth': [3,5,7,9],
-    'min_child_weight': [1,3,5],
-    'gamma': [i / 10.0 for i in range(0, 5)],
-    'subsample': [i / 10.0 for i in range(6, 10)],
-    'colsample_bytree': [i / 10.0 for i in range(6, 10)],
-    'reg_alpha': [0, 0.001, 0.005, 0.01, 0.05, 0.1, 1],
-    'learning_rate': [0.01, 0.02, 0.05, 0.1]
-}
 
-scoring = {'AUC': 'roc_auc', 'Accuracy': make_scorer(accuracy_score)}
 
-'''
-fit_params={"early_stopping_rounds":42, 
-            "eval_metric" : "mae", 
-            "eval_set" : [[test_features, test_labels]]}
+params = { "n_estimators": [10,25,50,75,100,125,150,175,200],
+           "min_samples_split" : range(2,15),
+           "criterion" : ["gini", "entropy"]
+           }
 
-'''
+gsearch = GridSearchCV(estimator=random_forest,
+                       param_grid=params,
+                       cv=3,
+                       verbose=1,
+                       n_jobs=-1
+                       )
 
-gsearch1 = GridSearchCV(estimator=XGBClassifier(),
-                        param_grid=param_test1,  # fit_params=fit_params,
-                        scoring=scoring,
-                        iid=False,
-                        cv=3,
-                        verbose=1,
-                        return_train_score=True,
-                        n_jobs=-1,
-                        refit='AUC'
-                        )
-gsearch1.fit(X_train, Y_train)
+gsearch.fit(X_train, Y_train)
 
-print(gsearch1.score(X_train, Y_train))
+print("\nScore: " + str(round(gsearch.score(X_train, Y_train),4)))
 
-ypred = gsearch1.predict(X_test)
-
-#Save test predictions to file
-output = pd.DataFrame({'PassengerId': test_df["PassengerId"],
-                       'Survived': ypred})
-
-output.to_csv('submission.csv', index=False)
-
-print(X_test)
+print("\nBest Parameters: "+ str(gsearch.best_params_))
