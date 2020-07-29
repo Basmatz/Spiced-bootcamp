@@ -19,10 +19,6 @@ y = train["count"]
 #Transform date column to datetime format
 train["datetime"] = pd.to_datetime(train["datetime"])
 
-#Create column for weekend
-train.loc[(train["datetime"].apply(lambda x: x.weekday() > 4)), "weekend"] = 1
-train.loc[(train["datetime"].apply(lambda x: x.weekday() <= 4)), "weekend"] = 0
-
 cats = [#"datetime",
         "season",
         "holiday",
