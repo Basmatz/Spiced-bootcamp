@@ -42,13 +42,8 @@ train["year"] = train["datetime"].dt.year
 train["yday"] = train["datetime"].dt.dayofyear
 
 
-df = train["count"].loc[
-            (train["holiday"] == 0)
-        ].mean()
 
-
-df = train.loc[
-    (train["holiday"] == 1)
+df2 = train[(train["holiday"] == 1)
     & (train["year"] == 2012)
                     ]
 
@@ -60,31 +55,32 @@ counti = train["count"].loc[
 print(counti)
 
 #fig, axs = plt.subplots()
-fig = sns.regplot(x="hour",y="count",data=df)
-fig.set(ylim=(-20,900),xlim=(-5,30))
+#fig = sns.regplot(x="hour",y="count",data=df)
+#fig.set(ylim=(-20,900),xlim=(-5,30))
 
-df = train.loc[
-            (train["holiday"] == 0)
+df = train[
+            (train["season"] == 1)
             & (train["year"] == 2012)
-            & (train["yday"].isin(range(194,201)))
+            #& (train["yday"].isin(range(100,300)))
         ]
 
 counti = train["count"].loc[
             (train["holiday"] == 0)
             & (train["year"] == 2011)
-            & (train["yday"].isin(range(194,201)))
+            & (train["yday"].isin(range(100,300)))
         ].mean()
 
 print(counti)
+print(df)
 
-fig2 = sns.regplot(x="hour",y="count",data=df)
-fig2.set(ylim=(-20,900),xlim=(-5,30))
+#fig2 = sns.regplot(x="hour",y="count",data=df)
+#fig2.set(ylim=(-20,900),xlim=(-5,30))
 
-sns.pairplot(df[["hour","count",
+sns.pairplot(df[["casual",
+        "registered",
         "temp",
-        "atemp",
         "humidity",
-        #"windspeed",
+        "windspeed",
         "holiday"
         ]], palette="husl", kind="reg")
 
