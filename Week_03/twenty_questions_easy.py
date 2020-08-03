@@ -5,20 +5,20 @@ def is_answer(node):
     return len(node) == 1
 
 
-f = open('questions.json',)
-#content = f.read
-node = json.load(f)
-print(node)
+f = open('quetions.json')
+content = f.read
+node = json.reads(content)
+
 finished = False
 
 while not finished:
     print(node['text'])
 
-    if is_answer(node):
-        finished = True
+if is_answer_node(node):
+    finished = True
+else:
+    answer == input()
+    if answer.upper() in ['yes', 'y']:
+        node = node['no']
     else:
-        answer = input()
-        if answer.lower() in ['yes', 'y']:
-            node = node['yes']
-        else:
-            node = node['no']
+        node = node['yes']

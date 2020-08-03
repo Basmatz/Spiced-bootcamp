@@ -1,4 +1,4 @@
-#%%
+
 
 ###Imports
 import seaborn as sns
@@ -15,42 +15,42 @@ from sklearn.preprocessing import StandardScaler
 #Plot Size
 plt.rcParams["figure.figsize"] = (14, 8)
 
-#%%
+
 
 ###Load Data
 df = pd.read_csv("train.csv")
 df_test = pd.read_csv("test.csv")
 
-#%% md
+
 
 ### Train Test Split
 
-#%%
+
 
 X = df.drop(["count","casual","registered"], axis=1)
 y = df["count"]
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, test_size=0.2, random_state=0)
 
-#%% md
+
 
 ### Data Exploration
 
-#%%
+
 
 eda = X_train.join(y_train)
 
-#%%
+
 
 eda.isna().any().sum()
 
-#%%
+
 
 #Transform date column to datetime format
 eda["datetime"] = pd.to_datetime(eda["datetime"])
 
 
-#%%
+
 
 #Create time columns
 eda["hour"] = eda["datetime"].dt.hour
@@ -60,14 +60,14 @@ eda["year"] = eda["datetime"].dt.year
 eda["yday"] = eda["datetime"].dt.dayofyear
 eda["wday"] = eda["datetime"].dt.dayofweek
 
-#%%
+
 
 #Create column for weekend
 eda.loc[(eda["datetime"].apply(lambda x: x.weekday() > 4)), "weekend"] = 1
 eda.loc[(eda["datetime"].apply(lambda x: x.weekday() <= 4)), "weekend"] = 0
 
 
-#%%
+
 
 #Difference between holiday, weekday and weekend
 
@@ -82,7 +82,7 @@ sns.lineplot(x=eda["hour"],y=eda["count"],hue=eda["weekend"])
 #                     ]
 # daytype
 
-#%%
+
 
 #Overall Average
 overall_mean = int(round(eda["count"].mean()))
@@ -103,7 +103,7 @@ workingday_mean = int(round(eda["count"].loc[(eda["workingday"] == 1)].mean()))
 print(f"Average Usage on working days: {workingday_mean}")
 
 
-#%%
+
 
 
 #Usage per weekday through the seasons
@@ -118,12 +118,12 @@ sns.heatmap(data=heat,cmap='coolwarm', annot=True, fmt=".1f", annot_kws={'size':
 
 
 
-#%%
+
 
 #Correlations
 sns.heatmap(eda.corr(), annot=True)
 
-#%%
+
 
 #Pairplot
 # pair = eda[eda["month"] == 6]
@@ -132,11 +132,11 @@ sns.heatmap(eda.corr(), annot=True)
 #         plot_kws={'line_kws':{'color':'red'}},
 #         kind="reg")
 
-#%% md
+
 
 ### Feature Engineering
 
-#%%
+
 
 #Relevant Categories
 cats = [
@@ -151,7 +151,7 @@ cats = [
     "yday"
         ]
 
-#%%
+
 
 #PCA
 from sklearn.preprocessing import StandardScaler
@@ -197,11 +197,11 @@ plt.axis('equal')
 
 
 
-#%% md
+
 
 ### Train a model
 
-#%%
+
 
 
 
@@ -211,6 +211,6 @@ m.fit(X_train,y_train)
 
 print(m.score(X_train,y_train))
 
-#%%
+
 
 
