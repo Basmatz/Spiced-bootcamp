@@ -1,0 +1,269 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Aug  4 10:53:20 2020
+
+@author: stazhe
+"""
+
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Aug  3 11:42:58 2020
+
+@author: stazhe
+"""
+
+
+import requests
+import re
+from bs4 import BeautifulSoup
+from bs4 import SoupStrainer
+
+only_a_tags = SoupStrainer("a")
+
+
+
+url = 'http://www.rockk.ru/viewpage.php?page_id=67'
+kino =requests.get(url)
+
+kino_html = kino.text
+
+kino_soup_a = BeautifulSoup(kino.content, "lxml", parse_only=only_a_tags)
+kino_relevant_items = kino_soup_a.find_all("a", href=lambda href: href and 'album' in href)
+print(kino_relevant_items)
+
+kino_soup = BeautifulSoup(kino.content, 'lxml')
+#print(kino_soup)
+
+#print(kino_soup.prettify())
+def find_links(url, keyword, listname):
+    """
+    Makes a list of links containing a relevant keyword in a given URL
+
+    Parameters
+    ----------
+    url : a URL that can be passed to requests
+        
+    keyword : string
+        keyword common to the needed links
+
+    Returns
+    -------
+    List of URLs of the requested links
+
+    """
+    req=requests.get(url)
+    req_soup_a = BeautifulSoup(req.content, "lxml", parse_only=only_a_tags)
+    relevant_items = req_soup_a.find_all("a", href=lambda href: href and keyword in href)
+    for item in relevant_items:
+         if keyword in item.get('href'):
+               listname.append("http://www.rockk.ru/"+item.get('href'))
+    
+    
+
+albumslist=[]
+find_links(url, "album", albumslist)
+print(albumslist)
+
+make_text_files(albumslist, 'readmore')
+
+
+def getlinks(soup, listname, keyword):
+    """generates a list of links from the main body class of a Beautiful Soup object, all containing a given keyword
+    Params:
+    --------
+    soup: soup object to be inspected
+    listname: list object which the links are to be appended to
+    keyword: string that is in the 
+    """
+    for result in soup.find_all(class_="main-body"):
+        for link in result.find_all('a'):
+            if keyword in link.get('href'):
+               listname.append("http://www.rockk.ru/"+link.get('href'))
+
+
+#Finding links to albiums:
+albumlinks = []
+
+getlinks(kino_soup, albumlinks)
+
+# albumlinks_dict = {}
+# for result in kino_soup.find_all(class_="main-body"):
+#      for link in result.find_all('a'):
+#          if "album" in link.get('href'):
+#             print(link.get('img alt'), link.get('href'))
+            
+print(albumlinks)
+
+def make_text_files(list_of_links, keyword):
+    """Makes a text file from every link in a list
+    Parameters:
+    -----------
+    list_of_links : a list containing links ending in = followed by an ID
+    keyword : a key filtering all the relevant links, str
+    """
+    for link in list_of_links:
+        #Request the webpage
+        req=requests.get(link)
+        
+        #Name is the unique digit ID plus album name/song name
+        name = str(link).split("=")[1]
+        name+=BeautifulSoup(req.content, 'lxml').title.string.split('-')[-1].replace(" ", "_")
+      
+        #Parse the links in it with bs4
+        req_soup_a = BeautifulSoup(req.content, 'lxml', parse_only=only_a_tags)
+        #Filters the links on the page by ones containing the keyword
+        relevant_items = req_soup_a.find_all("a", href=lambda href: href and keyword in href)
+        
+        with open(name+'.txt', 'w', encoding="UTF8") as file:
+            file.write(str(relevant_items))
+
+make_text_files(albumlinks, 'readmore')
+
+req = requests.get(albumlinks[0])
+print(BeautifulSoup(req.content, 'lxml').title.string.split('-')[2].replace(" ", "_"))
+req_soup = BeautifulSoup(req.content, 'lxml', parse_only=only_a_tags)
+songs = req_soup.find_all("a", href=lambda href: href and "readmore" in href)
+print(songs)
+#print(result)
+#check status code in order to assess whether request was successful
+#print(kino.status_code)
+
+#print(type(kino))
+#help(kino)
+
+#print(kino.text)
+
+# # Because the program deals with a page in cyrillic, we have to check the encoding 
+# # to make sure that the characters are read correctly. This is done by searching 
+# # for all instances of "charset" in the meta lines and isolating the name of the 
+# # encoding:
+
+
+
+# def find_charset(req):
+#     """
+#     Finds the encoding in the meta settings of a requested webpage and sets the encoding of it to it
+#     """
+#     charset = re.findall("<meta.+charset=(.+)(?='\s\/>)", req.text)
+#     req.encoding = charset[0]
+    
+#     return req
+
+# find_charset(kino)   
+# #charset = re.findall("<meta.+charset=(.+)(?='\s\/>)", kino.text)
+# #print(charset)
+
+# # set the encoding to the correct one and save the webpage as a text file.
+# #kino.encoding = charset[0]
+
+
+# def make_textfile(name, filename):
+#     '''Makes a UTF-8 encoded text file with the same name from a request object'''
+#     with open(filename+'.txt', 'w', encoding="UTF8") as file:
+#         file.write(name.text)
+
+# make_textfile(kino, 'kino')    
+
+# # with open('kino.txt', 'w', encoding="UTF8") as file:
+# #     file.write(kino.text)
+    
+# # Check that the characters have been rendered correctly:
+
+
+# def check_cyrillic (textfile):
+#     """
+#     Checks if a given file (extension .txt) contains a cyrillic vowel
+#     """
+#     with open(textfile, 'r') as file:
+     
+#         contents =file.read()
+#         assert any(x in contents for x in ['а','е','ё','и','о','у'])
+#         return contents
+
+# contents = check_cyrillic('kino.txt')
+
+# # with open('kino.txt', 'r') as file:
+ 
+# #     contents =file.read()
+# #     assert 'д' in contents
+# #     # checks for a cyrillic character
+
+# #print(album_links)
+
+# def find_urls (contents, pattern):
+#     """
+#     Makes a dictionary of relevant links for a given page saved in a currently open text file
+    
+#     Params:
+#     -------
+#     contents: the variable name of the file currently opened as file.read()
+#     pattern: the regular expression for the needed url 
+#     """
+#     links=re.findall(pattern, contents)
+#     urls = {pattern.split('=')[1]: 'http://www.rockk.ru/'+link for link in links}
+#     return urls
+
+# album_pattern = "(album\.php\?cat_id=\d*)"
+
+# album_urls = find_urls(contents, album_pattern)
+
+
+
+# # Next search for links to albums in the text:
+# #album_links=re.findall("(album\.php\?cat_id=\d\d\d)", contents)
+# #returns a list of album links.
+# #print(album_links)
+# #Next we make a dictionary of links for the songs on each album:
+# #album_urls = {str(link)[-3:]: 'http://www.rockk.ru/'+link for link in album_links}
+# #print(album_urls)
+
+# # For each url we make a new request:
+
+# def make_text_files (urls):
+#     for url in urls:
+#         request = requests.get(url)
+#    #    print(album.status_code) <-- optional check for errors in request
+    
+#         find_charset(request)
+#         make_textfile(urls[url], str(urls[url]))
+    
+    
+# # for album_url in album_urls.values():
+# #     album = requests.get(album_url)
+# # #    print(album.status_code) <-- optional check for errors in request
+    
+# #     find_charset(album)
+    
+# #     with open(str(album_url)[-3:]+'.txt', 'w', encoding="UTF8") as file:
+# #         file.write(album.text)
+    
+# # def find_song_urls(contents):
+# #     """
+# #     Finds the song URLs for an open album file currently opened
+    
+# #     Params:
+# #     -------
+# #     contents is the variable name of the file currently opened as file.read()
+    
+# #     """
+# #     song_links=re.findall("(text\.php\?readmore=\d*)", contents)
+# #     song_urls = {"song_"+str(link)[-4:]: 'http://www.rockk.ru/'+link for link in song_links}
+# #     return song_urls
+
+
+# song_pattern = "(text\.php\?readmore=\d*)"
+# print(album_urls)
+
+# # Make text files for all songs in an album:    
+# for album_key in album_urls:
+#     contents = check_cyrillic(str(album_key)+'.txt')
+#     song_urls = find_urls(contents, song_pattern)
+    
+    
+#     #contents = check_cyrillic(album_urls[album_key])
+#     #album_songs=find_song_urls(contents)
+#     print(album_urls[album_key])
+
