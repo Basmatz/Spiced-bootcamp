@@ -11,15 +11,15 @@ from sklearn.feature_extraction.text import TfidfTransformer
 import pandas as pd
 
 
-import stanza
-from spacy_stanza import StanzaLanguage
-# from spacy import displacy
-# stanza.download('ru')
-snlp = stanza.Pipeline(lang="ru")
-nlp = StanzaLanguage(snlp)
+# import stanza
+# from spacy_stanza import StanzaLanguage
+# # from spacy import displacy
+# # stanza.download('ru')
+# snlp = stanza.Pipeline(lang="ru")
+# nlp = StanzaLanguage(snlp)
 
-with open("Кино: Братская любовь.txt", 'r') as textfile:
-    text =textfile.read()
-doc = nlp(text)
-# displacy.render(doc, style="ent")
+# with open("Кино: Братская любовь.txt", 'r') as textfile:
+#     text =textfile.read()
+# doc = nlp(text)
+# # displacy.render(doc, style="ent")
 

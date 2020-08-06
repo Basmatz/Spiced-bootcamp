@@ -10,7 +10,7 @@ Created on Tue Aug  4 19:49:37 2020
 import requests
 import re
 from bs4 import BeautifulSoup
-from bs4 import SoupStrainer#Import os module
+from bs4 import SoupStrainer
 import os
 import fnmatch
 

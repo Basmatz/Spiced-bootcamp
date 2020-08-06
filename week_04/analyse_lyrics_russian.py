@@ -12,9 +12,8 @@ from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 
 
-# import spacy
 from spacy.lang.ru import Russian
-# from spacy.tokenizer import Tokenizer
+from spacy_russian_tokenizer import RussianTokenizer, MERGE_PATTERNS
 
 def clean_text(review, model):
     """preprocess a string (tokens, stopwords, lowercase, lemma & stemming) returns the cleaned result
@@ -32,11 +31,17 @@ def clean_text(review, model):
             
     return new_doc
 
+def vectorize_my_word(word, model):
+    try:
+        return model.vocab[word].vector.reshape(-1,1).T
+    except:
+        print("Doesn't look like this word can be found")
+        return None
 
-from spacy_russian_tokenizer import RussianTokenizer, MERGE_PATTERNS
 
 
 nlp = Russian()
+
 
 russian_tokenizer = RussianTokenizer(nlp, MERGE_PATTERNS)
 nlp.add_pipe(russian_tokenizer, name='russian_tokenizer')
@@ -64,7 +69,7 @@ with open("Кино: Город.txt", 'r') as textfile:
 
 corpus.append(new_song)
 
-cv = CountVectorizer(tokenizer = nlp.tokenizer)
+cv = CountVectorizer(tokenizer = nlp.tokenizer, stop_words="russian")
 # cv = CountVectorizer()
 vec_corpus = cv.fit_transform(corpus)
 df = pd.DataFrame(vec_corpus.todense(), columns=cv.get_feature_names(), index=['Асфальт', "Братская любовь", "Война", "Город"])
@@ -87,4 +92,19 @@ for token1 in doc:
                     print(token1.text, token2.text, token1.similarity(token2))
                     
 doc2= clean_text(corpus[0], nlp)
-print(doc2)
+
+for word in doc2:
+    vectors = vectorize_my_word('word', nlp)
+    print(vectors)
+    
+    
+    
+print(doc2[0])    
+print(vectorize_my_word(doc2[0], nlp))  
+
+# print(len(nlp.vocab))   
+# for word in nlp.vocab:
+#     print(word.text)   
+    
+
+    
