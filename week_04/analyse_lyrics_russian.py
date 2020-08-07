@@ -31,12 +31,12 @@ def clean_text(review, model):
             
     return new_doc
 
-def vectorize_my_word(word, model):
-    try:
-        return model.vocab[word].vector.reshape(-1,1).T
-    except:
-        print("Doesn't look like this word can be found")
-        return None
+# def vectorize_my_word(word, model):
+#     try:
+#         return model.vocab[word].vector.reshape(-1,1).T
+#     except:
+#         print("Doesn't look like this word can be found")
+#         return None
 
 
 
@@ -106,5 +106,13 @@ print(vectorize_my_word(doc2[0], nlp))
 # for word in nlp.vocab:
 #     print(word.text)   
     
+
+
+
+
+
+
+
+
 
     

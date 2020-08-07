@@ -350,7 +350,7 @@ df_cv_kino = pd.DataFrame(kino_cv.todense(), columns=cv.get_feature_names())
 df_tf_kino = pd.DataFrame(kino_cv_tf.todense(), columns=cv.get_feature_names())
 
 
-
+artists_corpus
 
 
 

@@ -159,5 +159,8 @@ for album in albumslist:
         title = get_song_title(song, artistname)
         lyrics = get_song_lyrics(song)
         lyrics = remove_chords(lyrics)
-        write_lyrics_to_text(title, lyrics)       
-            
+        write_lyrics_to_text(title, lyrics)     
+        
+        song_lemma = preprocess_text(lyrics)
+        
+  
