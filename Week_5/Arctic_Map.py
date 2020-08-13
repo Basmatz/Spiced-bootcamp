@@ -16,8 +16,12 @@ base = gpd.read_file(SHAPE_BASE)
 
 stations = pd.read_csv('arctic_stations.csv')
 
-stations_x = stations['LON_dec'].to_list()
-stations_y = stations['LAT_dec'].to_list()
+
+hover = HoverTool(tooltips = [
+    ('Weather Station','@staname'),
+    ('Station ID', '@staid'),
+    ('(Longitude, Latitude)', '(@sta_x, @sta_y)'),
+    ])
 
 # plot base
 
@@ -37,12 +41,6 @@ stations_source = ColumnDataSource(data=dict(
     staname=stations['STANAME'],
     staid=stations['STAID']
     ))
-
-hover = HoverTool(tooltips = [
-    ('Weather Station','@staname'),
-    ('Station ID', '@staid'),
-    ('(Longitude, Latitude)', '(@sta_x, @sta_y)'),
-    ])
 
 
 p.patches('xs',
