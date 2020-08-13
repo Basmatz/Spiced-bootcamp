@@ -1,0 +1,56 @@
+Classifier 1:
+
+#Accuracy: 0.25
+#Precision: 0.0625
+#Recall: 1
+#F1-Score: 0.118
+#Classifier 2:
+#Accuracy: 0.93
+#Precision: 0.4
+#Recall: 0.8
+#F1-Score: 0.53
+
+# First Classifier
+Accuracy= 250/1000
+Precision= 50 (50+750) TP/ (TP+FP)
+recall = 50/50 #TP/(TP*FN)
+fl = 2*Precision*recall/(Precision+recall)
+
+#### Evaluating Classfiers
+
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.dummy import DummyClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.model_selection import train_test_split
+
+#### Read the data
+df = pd.read_csv('train.csv', index_col=0)
+df.head()
+
+#### Split the data into train and test set
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=10)
+X_train.shape, X_test.shape
+
+#### Feature Engineer
+
+df.isna().any()
+
+# This is not the focus of this afternoon, so I will keep it simple
+X_train_engineered = X_train[['Pclass', 'SibSp']]
+
+#### Build a DummyClassifier
+##### Strategy='most_frequent' creates a model that always predicts the majority class
+m_dummy = DummyClassifier(strategy='most_frequent', random_state=10)
+
+m_dummy.fit(X_train_engineered, y_train)
+DummyClassifier(random_state=10, strategy='most_frequent')
+
+####  m_dummy.predict(X_train_engineered) will always predict the majority class
+# In the case of the titanic dataset the majority of people did not survive, hence
+# the majority class is 0. The dummy classifier will only predict 0
+# It is a control model
+
+# m_dummy.predict(X_train_engineered)
