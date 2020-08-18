@@ -1,0 +1,139 @@
+EUROPEAN CLIMATE ASSESSMENT & DATASET (ECA&D), file created on 14-08-2020
+THESE DATA CAN BE USED FREELY PROVIDED THAT THE FOLLOWING SOURCE IS ACKNOWLEDGED:
+
+Klein Tank, A.M.G. and Coauthors, 2002. Daily dataset of 20th-century surface
+air temperature and precipitation series for the European Climate Assessment.
+Int. J. of Climatol., 22, 1441-1453.
+Data and metadata available at http://www.ecad.eu
+
+FILE FORMAT (MISSING VALUE CODE IS -9999):
+
+ 01- 05 STAID  : Station identifier
+ 07- 46 STANAME: Station name
+ 48- 49 CN     : Country code (ISO3116 country codes)
+ 51- 59 LAT    : Latitude in degrees:minutes:seconds (+: North, -: South)
+ 61- 70 LON    : Longitude in degrees:minutes:seconds (+: East, -: West)
+ 72- 75 HGTH   : Station elevation in meters
+
+STAID,STANAME                                 ,CN,      LAT,       LON,HGHT
+
+  257,CET CENTRAL ENGLAND                     ,GB,+52:25:12,-001:49:48,  78
+  271,ARMAGH                                  ,GB,+54:21:00,-006:39:00,  62
+  272,ESKDALEMUIR                             ,GB,+55:19:00,-003:12:00, 242
+  274,RADCLIFFE METEOROLOGICAL STATION OXFORD ,GB,+51:45:40,-001:15:50,  63
+  273,HULL                                    ,GB,+53:45:21,-000:21:23,   2
+  275,WICK                                    ,GB,+58:27:00,-003:05:00,  36
+  348,LERWICK                                 ,GB,+60:08:00,-001:11:00,  82
+  349,STORNOWAY AIRPORT                       ,GB,+58:12:49,-006:19:03,  15
+  350,VALLEY                                  ,GB,+53:15:00,-004:32:00,  11
+  351,WADDINGTON                              ,GB,+53:09:58,-000:31:26,  68
+  352,CAMBORNE                                ,GB,+50:13:00,-005:19:00,  88
+ 1627,KIRKWALL                                ,GB,+58:57:00,-002:54:00,  26
+ 1628,KINLOSS                                 ,GB,+57:39:00,-003:34:12,   5
+ 1629,CRAIBSTONE                              ,GB,+57:10:48,-002:12:00, 102
+ 1630,MYLNEFIELD                              ,GB,+56:27:00,-003:04:12,  31
+ 1631,RINGWAY                                 ,GB,+53:21:00,-002:16:48,  69
+ 1632,ASKHAM BRYAN                            ,GB,+53:55:12,-001:10:12,  32
+ 1633,SHAWBURY                                ,GB,+52:48:00,-002:40:12,  72
+ 1634,GOUDHURST                               ,GB,+51:04:48,+000:27:36,  85
+ 1635,DALE FORT                               ,GB,+51:42:00,-005:09:00,  33
+ 1636,PAISLEY                                 ,GB,+55:50:43,-004:25:46,  32
+ 1637,CWMYSTWYTH                              ,GB,+52:21:00,-003:49:12, 301
+ 1638,LONG ASHTON                             ,GB,+51:25:48,-002:40:12,  51
+ 1639,CAMBRIDGE (B. GDNS)                     ,GB,+52:11:35,+000:07:55,  13
+ 1640,ALDERGROVE                              ,GB,+54:39:00,-006:13:12,  81
+ 1800,AUCHINCRUIVE                            ,GB,+55:28:37,-004:33:58,  48
+ 1801,GLENLEE                                 ,GB,+55:05:56,-004:11:10,  55
+ 1802,THREAVE                                 ,GB,+54:55:30,-003:57:00,  73
+ 1803,RONALDSWAY                              ,GB,+54:05:06,-004:37:59,  16
+ 1804,NEWTON RIGG                             ,GB,+54:40:11,-002:47:11, 169
+ 1805,GRIZEDALE                               ,GB,+54:20:17,-003:01:12,  91
+ 1806,PRESTON: MOOR PARK                      ,GB,+53:46:26,-002:42:11,  33
+ 1807,HAWARDEN BRIDGE                         ,GB,+53:13:00,-003:01:38,   5
+ 1808,LOGGERHEADS: COLOMENDY CENTRE           ,GB,+53:09:00,-003:11:46, 210
+ 1809,INVERNESS                               ,GB,+57:29:13,-004:13:23,   4
+ 1810,ABERPORTH                               ,GB,+52:08:20,-004:34:19, 133
+ 1811,GOGERDDAN                               ,GB,+52:25:55,-004:01:12,  31
+ 1812,YEOVILTON                               ,GB,+51:00:22,-002:38:24,  20
+ 1813,SWANAGE                                 ,GB,+50:36:50,-001:57:29,  10
+ 1814,PLYMOUTH: MOUNTBATTEN                   ,GB,+50:21:14,-004:07:16,  50
+ 1815,SLAPTON                                 ,GB,+50:17:31,-003:39:04,  32
+ 1816,ST MAWGAN                               ,GB,+50:26:13,-004:59:56, 103
+ 1817,BUDE                                    ,GB,+50:49:41,-004:32:46,  15
+ 1818,BRAEMAR                                 ,GB,+57:00:22,-003:23:49, 339
+ 1819,BALMORAL                                ,GB,+57:02:13,-003:13:12, 283
+ 1820,HILLSBOROUGH                            ,GB,+54:27:07,-006:04:12, 116
+ 1821,STORMONT CASTLE                         ,GB,+54:36:11,-005:49:44,  56
+ 1822,LOUGH NAVAR FOREST                      ,GB,+54:26:20,-007:54:11, 126
+ 1823,GUERNSEY: AIRPORT                       ,GB,+49:25:59,-002:36:00, 101
+ 1824,JERSEY: AIRPORT                         ,GB,+49:13:01,-002:12:00,  84
+ 1825,DYCE                                    ,GB,+57:12:18,-002:12:14,  65
+ 1826,ALWEN                                   ,GB,+53:03:40,-003:33:14, 345
+ 1827,TIREE                                   ,GB,+56:29:49,-006:53:13,   9
+ 1828,ARDTALNAIG                              ,GB,+56:31:44,-004:06:40, 130
+ 1829,FASKALLY                                ,GB,+56:43:05,-003:46:08,  94
+ 1830,LEUCHARS                                ,GB,+56:22:37,-002:51:43,  10
+ 1831,PENICUIK                                ,GB,+55:49:26,-003:13:34, 185
+ 1832,EDINBURGH: ROYAL BOTANIC GARDEN         ,GB,+55:58:01,-003:12:36,  26
+ 1833,DUNBAR                                  ,GB,+56:00:14,-002:31:34,  23
+ 1834,BLYTH BRIDGE                            ,GB,+55:42:11,-003:22:01, 253
+ 1835,BOWHILL                                 ,GB,+55:32:28,-002:54:18, 168
+ 1836,KIELDER CASTLE                          ,GB,+55:14:02,-002:34:44, 201
+ 1837,MORPETH: COCKLE PARK                    ,GB,+55:12:54,-001:41:10,  95
+ 1838,HIGH MOWTHORPE                          ,GB,+54:06:18,-000:38:31, 175
+ 1839,SKEGNESS                                ,GB,+53:08:51,+000:20:52,   6
+ 1840,TERRINGTON ST CLEMENT                   ,GB,+52:44:42,+000:17:24,   2
+ 1841,EAST BERGHOLT                           ,GB,+51:57:32,+001:01:37,   7
+ 1842,WATTISHAM                               ,GB,+52:07:23,+000:57:43,  89
+ 1843,LOWESTOFT                               ,GB,+52:29:22,+001:44:46,  25
+ 1844,ROTHAMSTED                              ,GB,+51:48:22,-000:21:30, 128
+ 1845,WRITTLE                                 ,GB,+51:43:55,+000:25:52,  32
+ 1846,MALHAM TARN                             ,GB,+54:06:00,-002:09:43, 381
+ 1847,BRADFORD                                ,GB,+53:48:48,-001:46:20, 134
+ 1848,SHEFFIELD                               ,GB,+53:22:51,-001:29:23, 131
+ 1849,BUXTON                                  ,GB,+53:15:27,-001:54:44, 307
+ 1850,NOTTINGHAM: WATNALL                     ,GB,+53:00:18,-001:15:00, 117
+ 1851,WARSOP                                  ,GB,+53:13:23,-001:06:54,  46
+ 1852,NEWTOWN LINFORD                         ,GB,+52:40:48,-001:12:58, 119
+ 1853,WELLESBOURNE                            ,GB,+52:12:22,-001:36:11,  47
+ 1854,KEELE                                   ,GB,+52:59:53,-002:16:12, 179
+ 1855,MALVERN                                 ,GB,+52:06:45,-002:18:25,  62
+ 1856,HALESOWEN                               ,GB,+52:26:13,-002:04:30, 153
+ 1857,KINLOCHEWE                              ,GB,+57:36:47,-005:18:36,  25
+ 1858,LYONSHALL                               ,GB,+52:12:43,-002:58:05, 155
+ 1859,HAMPSTEAD                               ,GB,+51:33:40,-000:10:44, 137
+ 1860,HEATHROW                                ,GB,+51:28:44,-000:26:56,  25
+ 1861,WYE                                     ,GB,+51:11:06,+000:56:53,  56
+ 1862,MANSTON                                 ,GB,+51:20:46,+001:20:24,  49
+ 1863,BOGNOR REGIS                            ,GB,+50:46:52,-000:40:34,   7
+ 1864,EASTBOURNE                              ,GB,+50:45:42,+000:17:07,   7
+ 1865,HASTINGS                                ,GB,+50:51:18,+000:34:19,  45
+ 1866,WALLINGFORD                             ,GB,+51:36:11,-001:06:29,  48
+ 1867,HURN                                    ,GB,+50:46:44,-001:50:02,  10
+ 1868,EVERTON                                 ,GB,+50:44:31,-001:34:26,  16
+ 1869,LECKFORD                                ,GB,+51:07:23,-001:26:17, 117
+ 1870,HAYLING ISLAND                          ,GB,+50:47:02,-000:59:02,   4
+ 1871,ALICE HOLT LODGE                        ,GB,+51:10:37,-000:50:53, 115
+ 1872,LYNEHAM                                 ,GB,+51:30:07,-001:59:28, 145
+ 1873,RHUM: KINLOCH                           ,GB,+57:00:50,-006:17:13,   5
+ 1874,BENMORE: YOUNGER BOTANIC GARDEN         ,GB,+56:01:41,-004:59:10,  12
+ 1875,BUTE: ROTHESAY                          ,GB,+55:50:20,-005:03:50,  43
+ 1876,LEADHILLS                               ,GB,+55:25:01,-003:45:32, 393
+ 1877,CARNWATH                                ,GB,+55:42:00,-003:37:59, 208
+ 3507,BRAEMAR-1                               ,GB,+57:00:40,-003:23:46, 327
+ 3508,LOWESTOFT MONKTON AVENUE                ,GB,+52:28:59,+001:43:52,  18
+11102,BLACKPOOL SQUIRES GATE                  ,GB,+53:46:27,-003:02:17,  10
+ 2127,BOSCOMBE DOWN                           ,GB,+51:09:41,-001:45:11, 126
+ 2115,CARLISLE                                ,GB,+54:56:03,-002:57:44,  28
+11103,CAWOOD                                  ,GB,+53:49:39,-001:08:48,   6
+11104,CRANWELL                                ,GB,+53:01:51,-000:30:07,  63
+  461,DURHAM                                  ,GB,+54:46:04,-001:35:04, 102
+11105,LACOCK                                  ,GB,+51:25:51,-002:06:48,  49
+11106,LOSSIEMOUTH                             ,GB,+57:42:42,-003:19:19,   7
+11107,MONKS WOOD                              ,GB,+52:24:04,-000:14:07,  41
+11108,MORECAMBE NO 2                          ,GB,+54:04:34,-002:51:30,   7
+11109,PERSHORE COLLEGE                        ,GB,+52:05:59,-002:03:31,  37
+11110,SUTTON BONINGTON                        ,GB,+52:50:10,-001:14:59,  43
+11111,WIGHT ST CATHERINES POINT               ,GB,+50:34:30,-001:17:44,  20
+11112,WISLEY                                  ,GB,+51:18:36,-000:28:29,  38
+11113,WOBURN                                  ,GB,+52:00:51,-000:35:40,  89
