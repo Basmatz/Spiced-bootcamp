@@ -25,6 +25,36 @@ def feature_engineer_Kelvin3(data):
     return X.dropna()
 
 
+def feature_engineer_Kelvin6(data):
+    """
+    prepares features for linear regression including 
+    - weather variables: humidity, windspeed, atemp, weather,
+    - one-hot-encoded hours, day of the week, months, years
+    
+    arguments
+    ---------
+    data: raw training data
+    
+    
+    return
+    ------
+    dataframe of engineered features
+    
+    """
+    
+    data['t-1 K'] = data['Kelvin'].shift(1)
+    data['t-2 K'] = data['Kelvin'].shift(2)
+    data['t-3 K'] = data['Kelvin'].shift(3)
+    data['t-4 K'] = data['Kelvin'].shift(4)
+    data['t-5 K'] = data['Kelvin'].shift(5)
+    data['t-6 K'] = data['Kelvin'].shift(6)
+
+    
+    X = data[['t-1 K', 't-2 K', 't-3 K','t-4 K', 't-5 K', 't-6 K']]
+    
+    return X.dropna()
+
+
 
 
 
