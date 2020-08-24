@@ -1,0 +1,1 @@
+ssh -i c:/DataScience/amazonubuntukeys.pem ubuntu@3.123.38.166

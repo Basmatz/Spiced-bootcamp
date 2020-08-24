@@ -1,0 +1,1 @@
+ssh -i c:/DataScience/bashtest.pem ubuntu@3.121.99.183

@@ -1,0 +1,11 @@
+mkdir "metabase"
+
+cd metabase
+
+wget https://downloads.metabase.com/v0.36.4/metabase.jar
+
+sudo apt-get update
+
+sudo apt install default-jre
+
+sudo nohup java -jar -DMB_JETTY_PORT=80 metabase.jar &
