@@ -1,0 +1,34 @@
+version: '3'
+services:
+  # use logging.critical() instead of print()
+  # ports
+  # environment variables
+  # shared volumes
+
+  tweets:
+    # prints a random fruit every 10 seconds
+    build: tweets/
+    #depends_on:
+    #- postgresdb
+
+  #spices:
+    # prints a random spice every 10 seconds
+  #  build: spices/
+  #  volumes:
+  #  - ./spices/:/app
+    #command:
+    #- ["python", "random_spice.py"]
+
+  #postgresdb:
+  #  image: postgres
+    #port mapping LOCAL:CONTAINER
+  #  ports:
+  #  - 5555:5432
+  #  environment:
+  #  - POSTGRES_PASSWORD=1234
+
+  mongodb:
+    image: mongo
+    ports:
+    - 27000:27017
+    # psql -h 0.0.0.0 -p 5555 -U postgres postgres
