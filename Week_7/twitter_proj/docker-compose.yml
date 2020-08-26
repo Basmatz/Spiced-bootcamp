@@ -1,0 +1,36 @@
+version: '3'
+services:
+  # create 4 separate containers for each step of the task
+  tweet_getter:
+    # collects German-lang tweets about Alexei Navalny
+    build: tweet_getter/
+    volumes:
+    - .tweet_getter/:/app
+    depends_on:
+    - navalny_mongo
+
+  navalny_mongo:
+    # creates MongoDB database to store Navalny tweets prior to ETL
+    image: mongo
+    ports:
+    - 27017
+    container_name: "navalny_mongo"
+
+  etl:
+    # container for extracting tweets, doing sentiment analysis and storing results in postgres database
+    build: etl/
+    volumes:
+    - .etl/:/app
+    depends_on:
+    - navalny_mongo
+    - navalny_postgres
+    restart: "always"
+
+  navalny_postgres:
+    # container for postgres database
+    image: postgres
+    ports:
+    - 5555:5432
+    environment:
+    - POSTGRES_PASSWORD=1234
+    container_name: "navalny_postgres"
