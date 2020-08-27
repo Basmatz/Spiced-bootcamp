@@ -131,4 +131,5 @@ dmypy.json
 #MacOS
 .DS_Store
 FinalProject/credentials.py
-Week_07/test.py
+Week_07/app/app.py
+FinalProject/test.py
