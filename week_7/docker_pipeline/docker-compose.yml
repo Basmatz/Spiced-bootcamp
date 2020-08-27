@@ -1,0 +1,34 @@
+version: '3'
+services:
+
+  tweets:
+    build: tweets/
+    volumes:
+    - ./tweets/:/app
+    depends_on:
+    - mongodb
+
+  mongodb:
+    image: mongo
+    ports:
+    - 27018:27017
+    # container_name: "mongo"
+
+  etl:
+    build: etl/
+    volumes:
+    - ./etl/:/app
+    depends_on:
+    - mongodb
+    - postgresdb
+
+    restart: "always"
+
+  postgresdb:
+
+    image: postgres
+    ports:
+    - 5555:5432
+    environment:
+    - POSTGRES_PASSWORD=1234
+    #  psql -h 192.168.99.100 -p 5555 -U postgres postgres
