@@ -1,13 +1,24 @@
 version: '3'
 services:
-  # create 4 separate containers for each step of the task
+  # create 5 separate containers for each step of the task
+
+  historic_tweets:
+    build: historic_tweets/
+    volumes:
+    - ./historic_tweets/:/app
+    depends_on:
+    - navalny_mongo
+    container_name: "historic_tweets"
+
   tweet_getter:
     # collects German-lang tweets about Alexei Navalny
     build: tweet_getter/
     volumes:
-    - .tweet_getter/:/app
+    - ./tweet_getter/:/app
     depends_on:
     - navalny_mongo
+    container_name: "tweet_getter"
+    restart: "always"
 
   navalny_mongo:
     # creates MongoDB database to store Navalny tweets prior to ETL
@@ -20,10 +31,11 @@ services:
     # container for extracting tweets, doing sentiment analysis and storing results in postgres database
     build: etl/
     volumes:
-    - .etl/:/app
+    - ./etl/:/app
     depends_on:
     - navalny_mongo
     - navalny_postgres
+    container_name: "etl"
     restart: "always"
 
   navalny_postgres:
@@ -34,3 +46,14 @@ services:
     environment:
     - POSTGRES_PASSWORD=1234
     container_name: "navalny_postgres"
+
+  metabase:
+   image: metabase/metabase
+   ports:
+   - 3000:3000
+   restart: "always"
+   env_file:
+    - ./metabase_config/metabase_db.env
+   depends_on:
+   - navalny_postgres
+   container_name: "navalny_metabase"

@@ -21,17 +21,20 @@ import psycopg2
 
 # connect to mongodb database
 client = MongoClient(host = 'navalny_mongo', port = 27017)
-db = client.twitter_navalny
-tweets = db.tweets_navalny
+navalnytweet_db = client.navalny_db
+tweets = navalnytweet_db.tweet
 
 ## connect to postgres database
 db_pg = create_engine('postgres://postgres:1234@navalny_postgres:5432/postgres', echo = True)
 
 ## create table in postgres
 create_table = '''CREATE TABLE IF NOT EXISTS tweets_navalny_pg (
-user_name VARCHAR(50),
-tweet_text TEXT,
-sentiment REAL
+username VARCHAR(50),
+text TEXT,
+sentiment REAL,
+timestamp DATE,
+was_retweeted BOOL,
+tweet_ID VARCHAR(50)
 );
 '''
 
@@ -43,31 +46,34 @@ GERanalyzer = SentimentIntensityAnalyzer()
 def extract():
     '''Extract tweets from MongoDB database'''
     # pull previously un-extracted tweets out of mongodb database
-    extracted_tweets = list(tweets.find({'extracted': false}))
+    # extracted_tweets = list(tweets.find())
+    extracted_tweets = list(tweets.find({'extracted': 'no'}))
 
     # mark these tweets as extracted: add a new field "extracted" with value true to the existing tweets
-    db.tweets_navalny.update({}, {$set: {'extracted': true}}, false, true)
+    tweets.update_many({'extracted':'no'}, {'$set': {'extracted':'yes'}})
+    # tweets.update({}, {'$set': {'extracted': True}}, False, True)
     return extracted_tweets
 
 def analyse_sentiment(tweet):
     sentiment = GERanalyzer.polarity_scores(tweet)
     return sentiment['compound']
 
+
 def transform(extracted_tweets):
-    '''Transform data and return sentiment analysis'''
     transformed_tweets = []
+    '''Transform data and return sentiment analysis'''
     for tweet in extracted_tweets:
-        sentiment = analyse_sentiment(tweet)
+        sentiment = analyse_sentiment(tweet['text'])
         # datatype of the tweet: dictionary; add sentiment to dictionary
         tweet['sentiment'] = sentiment
-        transformed_tweets.append
+        transformed_tweets.append(tweet)
     return transformed_tweets
 
 def load(transformed_tweets):
     '''Load transformed data into postgres database'''
     for tweet in transformed_tweets:
         insert_query = "INSERT INTO tweets_navalny_pg VALUES (%s, %s, %s, %s, %s, %s);" # %s notation is placeholder, which we'll pass in below; more robust for handling quotation marks in tweet texts
-        db_pg.execute(insert_query, (tweet['user_name'], tweet['tweet_text'], tweet['sentiment'], tweet['timestamp'], tweet['was_retweeted'], tweet['place']))
+        db_pg.execute(insert_query, (tweet['username'], tweet['text'], tweet['sentiment'], tweet['timestamp'], tweet['was_retweeted'], tweet['tweet_ID']))
         logging.critical('---Inserting new tweet into postgres---')
         logging.critical(tweet)
 

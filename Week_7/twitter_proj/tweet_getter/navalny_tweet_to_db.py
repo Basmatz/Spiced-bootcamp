@@ -5,7 +5,7 @@ import json
 import logging
 import pymongo
 
-client = pymongo.MongoClient("mongodb://navalny_db:27017/")
+client = pymongo.MongoClient(host = 'navalny_mongo', port = 27017)
 navalnytweet_db = client.navalny_db
 tweets = navalnytweet_db.tweet
 
@@ -53,14 +53,16 @@ class TwitterListener(StreamListener):
         'username': t['user']['screen_name'],
         'followers_count': t['user']['followers_count'],
         'was_retweeted' : was_retweeted,
-        'place' : t['place'],
-        'timestamp' : t['created_at']
+        'extracted' : 'no',
+        'timestamp' : t['created_at'],
+        'tweet_ID' : t['id_str']
         }
 
         # print(f'\n\n\nTWEET INCOMING: {tweet["text"]}}\n\n\n')
-        logging.critical(f'\n\n\nTWEET INCOMING: {tweet["text"]}\n\n\n')
-        tweets.insert_one(tweet)
-
+        if tweets.find({'tweet_ID' : tweet['tweet_ID']}).count() == 0: # ensures that we don't duplicate tweets
+            docID = tweets.insert_one(tweet).inserted_id
+            logging.critical(f'\n\n\nTWEET INCOMING: {tweet["text"]}\n\n\n')
+            logging.critical(f'{str(docID)}')
 
     def on_error(self, status):
 
