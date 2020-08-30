@@ -4,31 +4,46 @@ services:
   tweets:
     build: tweets/
     volumes:
-    - ./tweets/:/app
+      - ./tweets/:/app
     depends_on:
-    - mongodb
+      - mongodb
+      - postgresdb
+
+
 
   mongodb:
     image: mongo
     ports:
-    - 27018:27017
+    - 27017:27017
     # container_name: "mongo"
 
   etl:
     build: etl/
     volumes:
-    - ./etl/:/app
+      - ./etl/:/app
     depends_on:
-    - mongodb
-    - postgresdb
+      - mongodb
+      - postgresdb
+    restart: "always" # if postgresdb is not ready, restart
 
-    restart: "always"
+
 
   postgresdb:
-
-    image: postgres
-    ports:
-    - 5555:5432
-    environment:
+   image: postgres
+#    port mapping LOCAL:CONTAINER
+   ports:
+   - 5432:5432 #(maybe use 5555:5432 if port is occupied already)
+   environment:
     - POSTGRES_PASSWORD=1234
-    #  psql -h 192.168.99.100 -p 5555 -U postgres postgres
+#  psql -h 192.168.99.100 -p 5555 -U postgres postgres
+
+
+  metabase:
+   image: metabase/metabase
+   ports:
+   - 3000:3000
+   restart: "always"
+   env_file:
+    - ./metabase_conf/metabase_db.env
+   depends_on:
+   - postgresdb

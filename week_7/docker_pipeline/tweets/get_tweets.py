@@ -3,6 +3,12 @@ from tweepy import OAuthHandler, Stream
 from tweepy.streaming import StreamListener
 import json
 import logging
+import pymongo
+
+
+client = pymongo.MongoClient(host='mongodb', port=27017)
+db= client.twitter
+tweets=db.tweets
 
 def authenticate():
     """Function for handling Twitter Authentication. Please note
@@ -40,11 +46,12 @@ class TwitterListener(StreamListener):
 
         tweet = {
         'text': t['text'],
-        'username': t['user']['screen_name'],
-        'followers_count': t['user']['followers_count']
+        'user_name': t['user']['screen_name'],
+        'followers_count': t['user']['followers_count'],
+        'extracted':'no'
         }
 
-        print(t['text'] + '\n\n')
+        tweets.insert(tweet)
 
         logging.critical(f'\n\n\nTWEET INCOMING: {tweet["text"]}\n\n\n')
 

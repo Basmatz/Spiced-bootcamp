@@ -48,9 +48,9 @@ analyzer = SentimentIntensityAnalyzer()
 def extract():
     '''Extracts tweets from the MongoDB database'''
 
-    extracted_tweets = list(tweets.find({'extracted': 'false'}))
+    extracted_tweets = list(tweets.find({'extracted': 'no'}))
 
-    db_mongo.tweets.update_many({'extracted': 'false'}, {'$set':{'extracted': 'true'}})
+    db_mongo.tweets.update_many({'extracted': 'no'}, {'$set':{'extracted': 'yes'}})
 
     return extracted_tweets
 
@@ -62,7 +62,7 @@ def transform(extracted_tweets):
     '''Transforms the data'''
     transformed_tweets = []
     for tweet in extracted_tweets:
-        sentiment = sentiment_analyzer
+        sentiment = sentiment_analyzer(tweet['text'])
         tweet['sentiment'] = sentiment
         transformed_tweets.append(tweet)
 
@@ -72,7 +72,7 @@ def load(transformed_tweets):
     '''Load transformed data into the postgres database'''
     for tweet in transformed_tweets:
         insert_query = "INSERT INTO tweets VALUES (%s, %s, %s)"
-        db_pg.execute(insert_query, (tweet['user_name'], tweet['text'], tweet['sentiment'], twet['timestamp']))
+        db_pg.execute(insert_query, (tweet['user_name'], tweet['text'], tweet['sentiment']))
         logging.critical('---Inserted a new tweet into postgres---')
         logging.critical(tweet)
 
