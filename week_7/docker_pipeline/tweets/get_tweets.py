@@ -6,9 +6,9 @@ import logging
 import pymongo
 
 
-client = pymongo.MongoClient(host='mongodb', port=27017)
-db= client.twitter
-tweets=db.tweets
+client = MongoClient(host='mongodb', port=27017)
+db_mongo = client.twitter
+tweets = db_mongo.tweets
 
 def authenticate():
     """Function for handling Twitter Authentication. Please note
