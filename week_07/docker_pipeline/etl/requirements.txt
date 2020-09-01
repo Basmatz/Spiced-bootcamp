@@ -1,0 +1,5 @@
+Faker
+pymongo
+SQLAlchemy
+psycopg2-binary
+#psycopg2

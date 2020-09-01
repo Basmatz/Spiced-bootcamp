@@ -1,0 +1,71 @@
+version: '3'
+services:
+# Everything below "services" will be a container
+  # use logging.critical() instead of print()
+  # ports
+  # environment variables
+  # shared volumes
+
+  # Which containers do we want for each parts in this weeks project?
+  # 1. collect tweets
+  # 2. convert to mongoDB
+  # 3. ETL sentiment analysis
+  # 4. postgres
+
+
+  tweets:
+    build: tweets/
+    volumes:
+      - ./tweets/:/app
+    depends_on:
+      - mongodb
+    # depends_on means that mongodb is started before tweets
+
+
+
+  mongodb:
+    image: mongo
+    # port mapping LOCAL:CONTAINER
+    ports:
+      - 27018:27017
+
+
+  etl:
+    build: etl/
+    volumes:
+      - ./etl/:/app
+    depends_on:
+      - mongodb
+      - postgresdb
+    restart: 'always'
+  # if restart is set to always - your container will always restart if its
+  # closed due to an error, eg if one of the containers it depends on isnt ready
+
+  postgresdb:
+    image: postgres
+    # image means there is a predefined image on Dockerhub under that name that
+    #we download from - firstr of all docker looks for a preexisting image on your computer
+    # port mapping LOCAL:CONTAINER
+    ports:
+    - 5555:5432
+    environment:
+    - POSTGRES_PASSWORD=1234
+    # psql -h 0.0.0.0 -p 5555 -U postgres postgres
+
+
+  # fruit:
+  #   # prints a random fruit every 10 seconds
+  #   build: fruit/
+  #   # build means we want to build an image according to a dockerfile insside
+  #   #the specified path
+
+  #   depends_on:
+  #   - postgresdb
+
+  # spices:
+  #   # prints a random spice every 10 seconds
+  #   build: spices/
+  #   volumes:
+  #   - ./spices/:/app
+  #   #command:
+  #   #- ["python", "random_spice.py"]

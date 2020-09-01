@@ -1,0 +1,39 @@
+version: '3'
+services:
+  tweet_collector:
+    build: tweet_collector/
+    volumes:
+    - ./tweet_collector/:/app
+    depends_on:
+    - mongodb
+  
+  
+  mongo_tweets:
+    image: mongo
+    ports:
+    - 27017:27017
+
+  etl:
+    build: etl/
+    volumes:
+    - ./etl/:/app
+    depends_on:
+    - mongo_tweets
+    - postgres_tweets
+    restart: "always"
+
+  postgres_tweets:
+    # container for postgres database
+    image: postgres
+    ports:
+    - 5432:5432
+    environment:
+    - POSTGRES_PASSWORD=1234
+    
+
+  slackbot:
+    # container for postgres database
+    build: slackbot
+    volumes:
+    - ./slackbot/:/app
+   
