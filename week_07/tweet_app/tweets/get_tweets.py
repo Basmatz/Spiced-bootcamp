@@ -5,6 +5,8 @@ import json
 import logging
 #from sqlalchemy import create_engine
 import pymongo
+import pandas as pd
+from datetime import datetime
 
 #db = create_engine('postgres://postgres:1234@postgresdb:5432/postgres', echo=True)
 client = pymongo.MongoClient("mongodb://mongodb:27017/")
@@ -36,8 +38,10 @@ class TwitterListener(StreamListener):
 
         """Whatever we put in this method defines what is done with
         every single tweet as it is intercepted in real-time"""
-        count = 200
+
         t = json.loads(data) #t is just a regular python dictionary.
+
+        #logging.critical(t)
 
         text = t['text']
         if 'extended_tweet' in t:
@@ -50,18 +54,30 @@ class TwitterListener(StreamListener):
         tweet = {
         'text': text,
         'username': t['user']['screen_name'],
-        'followers_count': t['user']['followers_count']
+        'followers_count': t['user']['followers_count'],
+        'user_location': t['user']['location'],
+        'created_at': t['created_at']
         }
 
-        logging.critical(f'\n\n\nTWEET INCOMING: {tweet["username"]} : {tweet["text"]}\n\n\n')
+        logging.critical(f'\n\n\nTWEET INCOMING: {tweet["username"]} : {tweet["text"]} : {tweet["followers_count"]} : {tweet["user_location"]}, {tweet["created_at"]}\n\n\n')
 
         #userid = '\'' + tweet['username'].replace('\'','').replace('\"','') + '\''
         #user_tweet = '\'' + tweet["text"].replace('\'','').replace('\"','') + '\''
         userid = tweet['username']
         text = tweet["text"]
+        followers = tweet['followers_count']
+        user_location = tweet['user_location']
+        #created_at = tweet['created_at']
+        timestamp = pd.to_datetime(tweet['created_at'])#.dt.strftime("%Y/%m/%d %H:%M:%S")
+        #created_at = datetime.fromtimestamp(timestamp)
+        now = datetime.now()
+        created_at = now
 
-        count += 1
-        tweepy_tweet = {"user":userid,"tweet_text": text, "count":count}
+        logging.critical(created_at)
+        logging.critical(now)
+
+        tweepy_tweet = {"user":userid,"tweet_text": text, "followers": followers, "user_location": user_location, "created_at": created_at, "extracted": "False"}
+        #tweepy_tweet = {"user":userid,"tweet_text": text}
 
         db.tweets.insert_one(tweepy_tweet)
         #sql = f"insert into tweets values({userid}, {user_tweet})"

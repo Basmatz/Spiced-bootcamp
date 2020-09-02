@@ -8,8 +8,26 @@ services:
   tweets:
     # prints a random fruit every 10 seconds
     build: tweets/
-    #depends_on:
-    #- postgresdb
+    volumes:
+       - ./tweets/:/app
+    depends_on:
+    - mongodb
+
+  etl:
+    build: etl/
+    volumes:
+       - ./etl/:/app
+    depends_on:
+    - mongodb
+    - postgresdb
+    restart: "always"
+
+  slack:
+    build: slack/
+    volumes:
+      - ./slack/:/app
+    depends_on:
+      - postgresdb
 
   #spices:
     # prints a random spice every 10 seconds
@@ -19,16 +37,16 @@ services:
     #command:
     #- ["python", "random_spice.py"]
 
-  #postgresdb:
-  #  image: postgres
+  postgresdb:
+    image: postgres
     #port mapping LOCAL:CONTAINER
-  #  ports:
-  #  - 5555:5432
-  #  environment:
-  #  - POSTGRES_PASSWORD=1234
+    ports:
+    - 5555:5432
+    environment:
+    - POSTGRES_PASSWORD=1234
 
   mongodb:
     image: mongo
     ports:
-    - 27000:27017
+    - 27018:27017
     # psql -h 0.0.0.0 -p 5555 -U postgres postgres
