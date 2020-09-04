@@ -1,0 +1,81 @@
+1)
+first n rows:
+
+df.head(n)
+
+writes csv file:
+
+df.to_csv(path)
+
+replace index:
+reset_index()
+set_index()
+
+long to wide:
+df.unstack()
+df.stack()
+
+deletes rows with NaNs
+df.dropna()
+
+swaps rows and columns
+df.T
+
+calculates desc stats:
+df.describe()
+
+wide to long:
+df.stack()
+
+data from excel:
+pd.read_xsl
+
+2)
+7.075416666666666
+
+3)
+a) Hans Rossling
+b) Ada Lovelace
+c) Gauss
+
+4)
+line 1: import load_iris as iris
+line 5: m=LogisticRegression() (no max depth)
+line 6: Xtrain, Xtest, ytrain, ytest = train_test_split(X, y,
+random_state=42)
+line 7: m.fit not m.fit_transform
+line 8: m.score(Xtest, ytest)
+
+5. git pull - pulls the git repo
+git log -
+git checkout orange -
+git remote add origin
+git add git ignore: adds files in git ignore to the repo
+
+6.
+linerarity - relationship between x and mean of y is linerar
+homescedasticity -
+independence - observations are independent of each otrher
+
+
+
+7.
+classification: decision tree, logistic regression, random forest, naive bayes
+regression: ridge, lasso, linear regression
+
+8.
+ridge -L2
+svc -kernel type
+logistic Regression
+elastic net - l1-l2
+decision tree - max depth
+k means - number of clusters
+lasso - l1
+polynomial features - degree
+random forest - number of trees
+
+9.
+1.b
+2. b
+3. c
+4. a
