@@ -1,8 +1,8 @@
 # launch this from within the deep_learning_w8 Python environment.
 
 from tensorflow.keras import Sequential # tensorflow terminology for feed-forward network
-from tensorflow.keras.layers import Dense # fully-connected layers (normal layer of neurons)
-from tensorflow.keras.layers import Activation
+# fully-connected layers (normal layer of neurons)
+from tensorflow.keras.layers import Input, Dense, Flatten, Conv2D, MaxPooling2D, Activation, Dropout, BatchNormalization
 from tensorflow.keras.datasets import mnist
 from tensorflow.keras.utils import to_categorical
 from tensorflow.keras import backend as K
@@ -10,6 +10,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import numpy as np
 
 import logging
 from contextlib import redirect_stdout
@@ -37,6 +38,14 @@ ytest2 = to_categorical(ytest, num_classes=10)
 
 ytrain2.shape
 ytest2.shape
+
+# new xtrain to reflect dimensions needed for CNN
+
+Xtrain_cnn = np.expand_dims(xtrain, axis=3)
+Xtest_cnn = np.expand_dims(xtest, axis=3)
+
+Xtrain_cnn.shape
+Xtest_cnn.shape
 
 # set up empty lists for collecting model Performance
 name_list = []
@@ -108,12 +117,12 @@ def overfitting(train_acc, test_acc):
     return fit_diff
 
 # function for running model
-def run_model(model, model_name, filepath):
+def run_model(model, model_name, filepath, xtrain, ytrain, xtest, ytest):
     callback = EarlyStopping(monitor='val_loss', patience=3)
     K.clear_session()
-    model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics='accuracy')
-    history = model.fit(xtrain2, ytrain2, verbose=0, epochs=epochs, batch_size=batch_size, callbacks=[callback], validation_split=0.2)
-    score, test_acc = model.evaluate(xtest2, ytest2, batch_size=batch_size)
+    model.compile(optimizer='adam', loss='categorical_crossentropy', metrics='accuracy')
+    history = model.fit(xtrain, ytrain, verbose=0, epochs=epochs, batch_size=batch_size, callbacks=[callback], validation_split=0.2)
+    score, test_acc = model.evaluate(xtest, ytest, batch_size=batch_size)
     train_acc = history.history['accuracy'][-1]
     val_acc = history.history['val_accuracy'][-1]
     fit_diff = overfitting(train_acc, test_acc)
@@ -124,11 +133,19 @@ def run_model(model, model_name, filepath):
 
 # function for all steps together:
 
-def run_everything(model, model_name, filepath, batch_size, epochs):
-    history, test_acc, train_acc, val_acc, score, fit_diff, no_epochs = run_model(model, model_name, filepath)
+def run_everything(model, model_name, filepath, batch_size, epochs, xtrain, ytrain, xtest, ytest):
+    history, test_acc, train_acc, val_acc, score, fit_diff, no_epochs = run_model(model, model_name, filepath, xtrain, ytrain, xtest, ytest)
     plot_performance(history, model_name, test_acc, no_epochs)
     write_notes(filepath, model_name, model, batch_size, epochs, history, train_acc, test_acc, fit_diff)
     append_info(model_name, val_acc, train_acc, test_acc, fit_diff)
+
+
+# function for looking at performance metrics
+
+def perf_metrics():
+    performance_data = {'model_name': name_list, 'validation_acc': val_acc_list, 'train_acc' : train_acc_list, 'test_acc': test_acc_list, 'overfitting': overfit_by}
+    performance = pd.DataFrame(performance_data)
+    return performance
 
 
 # model 1
@@ -275,21 +292,225 @@ run_everything(model9, 'model9', filepath, batch_size, epochs)
 
 
 ### investigate metrics so far.
-performance_data = {'model_name': name_list, 'validation_acc': val_acc_list, 'train_acc' : train_acc_list, 'test_acc': test_acc_list, 'overfitting': overfit_by}
 
-performance = pd.DataFrame(performance_data)
 
 
 performance
 
 
 
+# aims:
+# maximally simple model
+# while having lowest possible overfitting values
+# and highest possible test accuracy
+
+# on this basis: I'm going to pursue development of model4
+
+
+model4_improved = Sequential([
+    Dense(300, input_shape=(784,)),
+    Dropout(.5),
+    Activation('relu'),
+    Dense(100),
+    Dropout(.5),
+    Activation('relu'),
+    Dense(30),
+    Dropout(.5),
+    Activation('relu'),
+    Dense(10),
+    Activation('softmax')
+])
+
+run_everything(model4_improved, 'model4_improved', filepath, batch_size, epochs)
+
+
+# add batch normalisation
+
+model4_improved2_newsplit_adam = Sequential([
+    Dense(300, input_shape=(784,)),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(100),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(30),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(10),
+    Activation('softmax')
+])
+
+run_everything(model4_improved2_newsplit_adam, 'model4_improved2_newsplit_adam', filepath, batch_size, epochs)
 
 
 
+# model 10: different architecture.
+
+model10 = Sequential([
+    Dense(20, input_shape=(784,)),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(20),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(20),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(20),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(20),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(10),
+    Activation('softmax')
+])
+
+run_everything(model10, 'model10', filepath, batch_size, epochs)
+
+
+model11 = Sequential([
+    Dense(50, input_shape=(784,)),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(50),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(50),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(50),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(50),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(10),
+    Activation('softmax')
+])
+
+run_everything(model11, 'model11', filepath, batch_size, epochs)
+
+
+model12 = Sequential([
+    Dense(100, input_shape=(784,)),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(100),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(100),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(100),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(100),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(10),
+    Activation('softmax')
+])
+
+run_everything(model12, 'model12', filepath, batch_size, epochs)
 
 
 
+model13 = Sequential([
+    Dense(150, input_shape=(784,)),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(150),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(150),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(150),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(150),
+    Dropout(.5),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(10),
+    Activation('softmax')
+])
 
+run_everything(model13, 'model13', filepath, batch_size, epochs)
+
+
+model14 = Sequential([
+    Dense(150, input_shape=(784,)),
+    Dropout(.25),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(150),
+    Dropout(.25),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(150),
+    Dropout(.25),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(150),
+    Dropout(.25),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(150),
+    Dropout(.25),
+    Activation('relu'),
+    BatchNormalization(),
+    Dense(10),
+    Activation('softmax')
+])
+
+run_everything(model14, 'model14', filepath, batch_size, epochs)
+
+
+# incorporating CNN
+
+model1_CNN = Sequential([
+    Conv2D(32, kernel_size=(3,3), strides=(2,2), activation='relu', input_shape=(28,28,1)),
+    MaxPooling2D(pool_size=(3,3), strides=(2,2)),
+    Flatten(),
+    Dense(10, activation='softmax')])
+
+run_everything(model1_CNN, 'model1_CNN', filepath, batch_size, epochs, Xtrain_cnn, ytrain2, Xtest_cnn, ytest2)
+
+
+model2_CNN = Sequential([
+    Conv2D(32, kernel_size=(4,4), strides=(2,2), activation='relu', input_shape=(28,28,1)),
+    MaxPooling2D(pool_size=(3,3), strides=(2,2)),
+    Conv2D(64, kernel_size=(4,4), strides=(2,2), activation='relu'),
+    MaxPooling2D(pool_size=(3,3), strides=(2,2)),
+    Flatten(),
+    Dense(10, activation='softmax')])
+
+run_everything(model2_CNN, 'model2_CNN', filepath, batch_size, epochs, Xtrain_cnn, ytrain2, Xtest_cnn, ytest2)
 
 #
+performance = perf_metrics()
+performance
