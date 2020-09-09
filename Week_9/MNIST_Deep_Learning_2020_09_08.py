@@ -9,7 +9,9 @@ from tensorflow.keras import backend as K
 from tensorflow.keras.callbacks import EarlyStopping
 
 import matplotlib.pyplot as plt
+import pandas as pd
 
+import logging
 from contextlib import redirect_stdout
 
 (xtrain, ytrain), (xtest, ytest) = mnist.load_data()
@@ -36,41 +38,97 @@ ytest2 = to_categorical(ytest, num_classes=10)
 ytrain2.shape
 ytest2.shape
 
+# set up empty lists for collecting model Performance
+name_list = []
+val_acc_list = []
+train_acc_list = []
+test_acc_list = []
+overfit_by = []
+
+# define batch size and epochs
+
+epochs = 200
+batch_size = 500
+
+# function for appending info
+
+def append_info(model_name, val_acc, train_acc, test_acc, fit_diff):
+    name_list.append(model_name)
+    val_acc_list.append(val_acc)
+    train_acc_list.append(train_acc)
+    test_acc_list.append(test_acc)
+    overfit_by.append(fit_diff)
+
+
 # plotting function
 
-def plot_performance(history):
-    plt.plot(history.history['loss'], label='loss')
-    plt.plot(history.history['val_loss'], label='val_loss')
-    plt.plot(history.history['accuracy'], label='accuracy')
-    plt.plot(history.history['val_accuracy'], label='val_accuracy')
-    plt.legend(loc='upper left')
+fig, axs = plt.subplots(2)
+fig.suptitle('Vertically stacked subplots')
+axs[0].plot(x, y)
+axs[1].plot(x, -y)
+
+def plot_performance(history, model_name, test_acc, no_epochs):
+    fig, axs = plt.subplots(2, figsize=(12,8))
+    fig.suptitle(f'Training Performance: {str(model_name)}')
+    axs[0].plot(history.history['loss'], label='training loss')
+    axs[0].plot(history.history['val_loss'], label='validation loss')
+    axs[0].legend(loc='upper right')
+    axs[1].set_ylim([0, 1])
+    axs[1].plot(history.history['accuracy'], label='training accuracy', linestyle='dashed')
+    axs[1].plot(history.history['val_accuracy'], label='validation accuracy', linestyle='dashed')
+    axs[1].scatter(no_epochs, test_acc, label='test accuracy')
+    axs[1].legend(loc='upper left')
+    plt.savefig(f'/Users/laraehrenhofer/Documents/Coding_Projects/git_repos/logistic-lemongrass-student-code/Week_9/MNIST_NN_Plots/{model_name}.png')
 
 
 # writing notes to lab book doc
-file = '/Users/laraehrenhofer/Documents/Coding_Projects/git_repos/logistic-lemongrass-student-code/Week_9/experiment_log.txt'
+filepath = '/Users/laraehrenhofer/Documents/Coding_Projects/git_repos/logistic-lemongrass-student-code/Week_9/Experiment_Logs/'
 
-def write_notes(model, batch_size, epochs, history, score, acc):
-    with open(file, 'a') as f:
+def write_notes(filepath, model_name, model, batch_size, epochs, history, train_acc, test_acc, fit_diff):
+    file = str(filepath) + 'log_' + str(model_name) + '.txt'
+    with open(file, 'w') as f:
+        f.write(f'----- MODEL: {model_name} -----\n')
         with redirect_stdout(f):
             model.summary()
         f.write(f'Compilation parameters: batch size is {batch_size}, no. epochs is {epochs}\n\n')
-        f.write(f"Final accuracy: {history.history['accuracy']} \n\n")
-        f.write(f'Test score: {score} \n')
-        f.write(f'Test accuracy: {acc} \n')
+        f.write(f"Final accuracy: {train_acc} \n\n")
+        # f.write(f'Test score: {score} \n')
+        f.write(f'Test accuracy: {test_acc} \n')
+        f.write(f'Difference in training and test accuracy: {round(fit_diff*100, 1)}%\n')
         f.write(f'--------------------------------------- \n\n\n')
 
+# check on overfitting
+
+def overfitting(train_acc, test_acc):
+    fit_diff = train_acc - test_acc
+    if fit_diff > .02:
+        logging.critical(f'---- WARNING: Model appears to be overfitting by {round(fit_diff*100, 1)}% ----')
+    else:
+        logging.critical(f'Model does not seem to be overfitting \n Test-train accuracy difference is {round(fit_diff*100, 1)}%')
+    return fit_diff
+
 # function for running model
-def run_model(model):
+def run_model(model, model_name, filepath):
     callback = EarlyStopping(monitor='val_loss', patience=3)
     K.clear_session()
     model.compile(optimizer='rmsprop', loss='categorical_crossentropy', metrics='accuracy')
-    epochs = 200
-    batch_size = 500
-    history = model.fit(xtrain2, ytrain2, epochs=epochs, batch_size=batch_size, verbose=1, callbacks=[callback], validation_split=0.2)
-    score, acc = model.evaluate(xtest2, ytest2, batch_size=batch_size)
-    plot_performance(history)
-    write_notes(model, batch_size, epochs, history, score, acc)
-    print(f'Test score is: {score}\n Test accuracy is: {acc}')
+    history = model.fit(xtrain2, ytrain2, verbose=0, epochs=epochs, batch_size=batch_size, callbacks=[callback], validation_split=0.2)
+    score, test_acc = model.evaluate(xtest2, ytest2, batch_size=batch_size)
+    train_acc = history.history['accuracy'][-1]
+    val_acc = history.history['val_accuracy'][-1]
+    fit_diff = overfitting(train_acc, test_acc)
+    no_epochs = callback.stopped_epoch
+    print(f'Last validation accuracy was: {val_acc}\nTraining accuracy is: {train_acc}\nTest accuracy is: {test_acc}')
+    return history, test_acc, train_acc, val_acc, score, fit_diff, no_epochs
+
+
+# function for all steps together:
+
+def run_everything(model, model_name, filepath, batch_size, epochs):
+    history, test_acc, train_acc, val_acc, score, fit_diff, no_epochs = run_model(model, model_name, filepath)
+    plot_performance(history, model_name, test_acc, no_epochs)
+    write_notes(filepath, model_name, model, batch_size, epochs, history, train_acc, test_acc, fit_diff)
+    append_info(model_name, val_acc, train_acc, test_acc, fit_diff)
 
 
 # model 1
@@ -81,7 +139,9 @@ model1 = Sequential([
     Activation('softmax')
 ])
 
-run_model(model1)
+
+run_everything(model1, 'model1', filepath, batch_size, epochs)
+
 
 
 # model 2
@@ -94,7 +154,7 @@ model2 = Sequential([
     Activation('softmax')
 ])
 
-run_model(model2)
+run_everything(model2, 'model2', filepath, batch_size, epochs)
 
 
 # model 3... let's be a little more modest
@@ -108,7 +168,7 @@ model3 = Sequential([
     Activation('softmax')
 ])
 
-run_model(model3)
+run_everything(model3, 'model3', filepath, batch_size, epochs)
 
 
 # model 4: extra hidden layer
@@ -124,7 +184,7 @@ model4 = Sequential([
     Activation('softmax')
 ])
 
-run_model(model4)
+run_everything(model4, 'model4', filepath, batch_size, epochs)
 
 
 # model 5
@@ -142,7 +202,7 @@ model5 = Sequential([
     Activation('softmax')
 ])
 
-run_model(model5)
+run_everything(model5, 'model5', filepath, batch_size, epochs)
 
 
 # model 6
@@ -159,7 +219,7 @@ model6 = Sequential([
     Activation('softmax')
 ])
 
-run_model(model6)
+run_everything(model6, 'model6', filepath, batch_size, epochs)
 
 
 # model 7
@@ -176,7 +236,7 @@ model7 = Sequential([
     Activation('softmax')
 ])
 
-run_model(model7)
+run_everything(model7, 'model7', filepath, batch_size, epochs)
 
 
 
@@ -194,7 +254,7 @@ model8 = Sequential([
     Activation('softmax')
 ])
 
-run_model(model8)
+run_everything(model8, 'model8', filepath, batch_size, epochs)
 
 
 # model 8
@@ -211,4 +271,25 @@ model9 = Sequential([
     Activation('softmax')
 ])
 
-run_model(model9)
+run_everything(model9, 'model9', filepath, batch_size, epochs)
+
+
+### investigate metrics so far.
+performance_data = {'model_name': name_list, 'validation_acc': val_acc_list, 'train_acc' : train_acc_list, 'test_acc': test_acc_list, 'overfitting': overfit_by}
+
+performance = pd.DataFrame(performance_data)
+
+
+performance
+
+
+
+
+
+
+
+
+
+
+
+#
