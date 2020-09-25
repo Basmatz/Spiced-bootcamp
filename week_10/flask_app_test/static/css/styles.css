@@ -1,0 +1,36 @@
+/*
+* {
+  background-color: teal;
+}
+*/
+/* star means target all elements on the html page */
+
+/* Make all p-tags (paragraphs red)*/
+p {
+  color: blue;
+}
+.red{
+  color: red;
+}
+
+.bold{
+  font-weight: bold;
+}
+
+#green-text {
+  color:green;
+}
+
+.main-container{
+  /*height: 100vh;*/
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* PRIORITY (LEAST TO GREATEST):
+1. elements
+2. class
+3. id
+*/

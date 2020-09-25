@@ -1,0 +1,41 @@
+"""
+Write a Python program that converts the two list
+to the correct sentences and prints them.
+"""
+
+left = [
+ 1'Outlier or anomaly detection is used',
+ 2'Principal Component Analysis (PCA) is a method',
+ 3'Principal Component Analysis (PCA) is frequently used',
+ 4'There are many clustering methods',
+ 5'Non-negative Matrix Factorization (NMF) is an algorithm',
+ 6'Most clustering algorithms are based on a distance metric',
+ 7'Gaussian Mixture Models (GMM) are a generative model',
+ 8'Unsupervised learning is a family of machine learning methods',
+ 9'The "curse of dimensionality" is a problem',
+ 10't-SNE reduces data to two dimensions'
+]
+
+right = [
+ 1'frequently used in recommender systems and customer segmentation.',
+ 2'to visualize complex datasets.',
+ 3'that becomes worse the more features you have.',
+ 4'to identify credit card fraud.',
+ 5'for dimensionality reduction.',
+ 6'e.g. Euclidean or Manhatten distance.',
+ 7'that do not require labled data.',
+ 8'for detecting outliers.',
+ 9'as part of a supervised learning pipeline.',
+ 10'like K-means, DBSCAN or Ward.'
+]
+
+1.4
+2.5
+3.9
+4.10 correct
+5.1
+6.6 correct
+7.8
+8.7
+9.3
+10.2 correct

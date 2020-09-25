@@ -1,0 +1,22 @@
+Basti, Robin, Felix
+
+1.
+a) df.head(n)
+b) df.to_csv("...")
+c) df.set_index("column")
+d) df.unstack()
+e) df.duplicated()
+f) df.T
+g) df.summary()
+h) df.rolling.window()
+df.stack()
+df.read_excel("")
+
+6. a) homoscedasticity
+b) mean of residuals = 0
+c) residuals are normally distributed
+
+9.1 b)
+9.2 b)
+9.3 c)
+9.4a)
