@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
+# In[1]:
 
 
 import pandas as pd
@@ -13,73 +13,73 @@ from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import PolynomialFeatures
 
 
-# In[3]:
+# In[2]:
 
 
 df = pd.read_csv('train (2).csv')
 
 
-# In[4]:
+# In[3]:
 
 
 df.head(5)
 
 
-# In[6]:
+# In[12]:
 
 
 df['datetime'] = pd.to_datetime(df['datetime'])
 
 
-# In[7]:
+# In[13]:
 
 
 df['hour'] = df['datetime'].dt.hour 
 
 
-# In[501]:
+# In[14]:
 
 
 df['second'] = df['datetime'].dt.second
 
 
-# In[502]:
+# In[15]:
 
 
 df['minute'] = df['datetime'].dt.minute
 
 
-# In[503]:
+# In[16]:
 
 
 df['day'] = df['datetime'].dt.day
 
 
-# In[504]:
+# In[17]:
 
 
 df['month'] = df['datetime'].dt.month
 
 
-# In[505]:
+# In[18]:
 
 
 df['year'] = df['datetime'].dt.year
 
 
-# In[506]:
+# In[19]:
 
 
 df.head(5)
 
 
-# In[9]:
+# In[20]:
 
 
 df_hour = df.loc[df['hour'] == 14]
 
 
-# In[10]:
+# In[21]:
 
 
 df_hour.shape
@@ -87,19 +87,19 @@ df_hour.shape
 
 # ### Linear regression-hour
 
-# In[11]:
+# In[22]:
 
 
 sns.heatmap(df_hour.corr())
 
 
-# In[12]:
+# In[23]:
 
 
 sns.pairplot(df_hour)
 
 
-# In[13]:
+# In[26]:
 
 
 sns.pairplot(df_hour.df['count'], df_hour)
@@ -123,67 +123,67 @@ x_hour = df_hour['temp']
 plt.scatter(x_hour, y_hour)
 
 
-# In[527]:
+# In[ ]:
 
 
 sns.pairplot(df_hour, x_vars=["temp", "humidity", "weather", "season", "holiday", "workingday", "windspeed"], y_vars=["count"])
 
 
-# In[17]:
+# In[27]:
 
 
 df_hour.groupby(['season', 'weather', 'holiday', 'workingday']).mean()
 
 
-# In[19]:
+# In[ ]:
 
 
 sns.pairplot(df_hour, x_vars=[:], y_vars=["count"])
 
 
-# In[20]:
+# In[25]:
 
 
 df_hour_clean = df_hour.loc[((df_hour['season'] < 5) & (df_hour['holiday'] == 0) & (df_hour['workingday'] == 0))]
 
 
-# In[21]:
+# In[ ]:
 
 
 df_hour_clean[['temp','count']]
 
 
-# In[22]:
+# In[ ]:
 
 
 sns.pairplot(df_hour_clean, x_vars=["temp", "humidity", "weather", "season", "holiday", "workingday", "windspeed"], y_vars=["count"])
 
 
-# In[23]:
+# In[ ]:
 
 
 y_clean = df_hour_clean['count']
 
 
-# In[24]:
+# In[ ]:
 
 
 x_clean = df_hour_clean['temp']
 
 
-# In[38]:
+# In[ ]:
 
 
 df2 = df. loc[((df['a'] > 1) & (df['b'] > 0)) | ((df['a'] < 1) & (df['c'] == 100))] # example selection with conditions
 
 
-# In[36]:
+# In[ ]:
 
 
 df3 = df_hour_clean.loc[((df_hour_clean['temp'] > 29) & (df_hour_clean['humidity']) & (df_hour_clean['windspeed']))]
 
 
-# In[41]:
+# In[ ]:
 
 
 df3.head(5)
